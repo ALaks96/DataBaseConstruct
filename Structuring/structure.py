@@ -3,10 +3,11 @@ import os
 import json
 from Matching.segmenter import recursive_items
 from Matching.segmenter import get_annexes
-from Formatting.formatter import get_arbo
+from Matching.parser import make_dic
 from Extracting.metadata_extractor import get_meta
 from Extracting.text_extractor import get_text
-
+from Formatting.formatter import get_arbo
+from Formatting.formatter import to_json
 
 def restructure(struct, parsed):
     for key, value in struct.items():
@@ -18,7 +19,7 @@ def restructure(struct, parsed):
     return struct
 
 
-def annex_walker(path, struct_path="CANEVAS_STRUCT.json"):
+def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save = True):
     # Define your structure in a json and input it as a parameter
     final_struct = json.load(open(struct_path))
     list_of_titles = recursive_items(final_struct)
@@ -58,6 +59,7 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json"):
             for annex in flat_dic.keys():
                 final_struct = json.load(open(struct_path))
                 dic_of_annexes[str(annex)] = restructure(final_struct, flat_dic[str(annex)])
+                print(dic_of_annexes)
             dic_of_files["Content"] = dic_of_annexes
 
             # And assign all of this to our megadic, indexed by incremental numbers!
@@ -66,7 +68,7 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json"):
         except Exception as e:
             print("ERROR::", e, ':', os.path.basename(opord))
 
+    if save:
+        to_json(megadic, "scan.json")
+
     return megadic
-
-
-annex_walker(os.getcwd())

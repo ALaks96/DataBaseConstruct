@@ -34,7 +34,6 @@ def create_dict(which_list, list_stopwords):
 
 
 def make_dic(parsed_text, annexes, list_of_titles):
-
     try:
         dict_of_dicts = dict.fromkeys(annexes, 0)
         for i in range(len(parsed_text)):

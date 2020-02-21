@@ -1,5 +1,6 @@
 import os
-from Structuring.structure import opord_to_json
+from Structuring.structure import annex_walker
 
-path = os.getcwd() + '/Extracting/data/Correction OPORD 20(AZ)DB.docx'
-opord_to_json(path, save=True)
+path = os.getcwd() + "/temp"
+struct_path = os.getcwd() + "/CANEVAS_STRUCT.json"
+annex_walker(path, struct_path, save=True)
