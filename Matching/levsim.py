@@ -42,6 +42,9 @@ def levenshtein(source, target):
 def word_sim(s1, s2):
     abs_diff = levenshtein(s1, s2)
     tot_len = max(len(s1), len(s2))
-    rel_diff = abs_diff / tot_len
+    try:
+        rel_diff = abs_diff / tot_len
+    except ZeroDivisionError:
+        rel_diff = 1
 
     return rel_diff
