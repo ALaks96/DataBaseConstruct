@@ -1,7 +1,8 @@
 import json
 import os
 from PreProcessing.preprocess import filtering
-from Extracting.extractor import get_l_of_l
+from Extracting.text_extractor import get_l_of_l
+from Matching.levsim import levenshtein
 
 s = ['Exemplaire', 'PC', 'Référence', 'Fuseau horaire utilisé pour l\'ensemble de l\'ordre',
      'ARTICULATION', 'Situation',
@@ -24,9 +25,9 @@ def print_words_between(my_list, word1, word2, last=False):
     k, j, i1, i2 = 0, 0, 1000000, 1000000
     for node in my_list:
         j = j + 1
-        if filtering(word1) in filtering(node):
+        if levenshtein(filtering(word1), filtering(node)) < 0.3:
             i1 = min(i1, j)
-        if filtering(word2) in filtering(node):
+        if levenshtein(filtering(word2), filtering(node)) < 0.3:
             i2 = min(i2, j)
 
     for node in my_list:
