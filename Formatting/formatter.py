@@ -1,5 +1,6 @@
 import os
 import json
+import pandas as pd
 from datetime import datetime
 
 def get_arbo(location, ext=['ppt','pptx','docx','pdf','xlsx']):
@@ -33,3 +34,26 @@ def to_json(dic, file_name="metadata.json"):
 
     # close the connection
     fp.close()
+
+
+def dic_for_viz(final_dic):
+    collection = {}
+    index = 1
+    for doc, meta in final_dic.items():
+        metadata = {}
+        for key, value in final_dic[doc].items():
+            if key != "Content":
+                metadata[key] = value
+        collection[index] = metadata
+        index += 1
+
+    return collection
+
+
+def meta_to_df(final_dic, save=False):
+    df = pd.DataFrame(dic_for_viz(final_dic))
+    df = df.T
+    if save:
+        df.to_csv("Output/metadata.csv")
+
+    return df

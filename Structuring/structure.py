@@ -4,6 +4,7 @@ import json
 from Matching.segmenter import recursive_items
 from Matching.segmenter import get_annexes
 from Matching.parser import make_dic
+from Matching.parser import conformity_stat
 from Extracting.metadata_extractor import get_meta
 from Extracting.text_extractor import get_text
 from Formatting.formatter import get_arbo
@@ -13,14 +14,14 @@ def restructure(struct, parsed):
     for key, value in struct.items():
         if type(value) is dict:
             restructure(value, parsed)
-            struct[key]['subcontent'] = parsed[key]
+            struct[key]['texte_libre'] = parsed[key]
         else:
             if key in parsed.keys():
                 struct[key] = parsed[key]
     return struct
 
 
-def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True):
+def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True, viz=False, json_name="Output/scan.json"):
     # Define your structure in a json and input it as a parameter
     final_struct = json.load(open(struct_path))
     list_of_titles = recursive_items(final_struct)
@@ -50,7 +51,7 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True):
             dic_of_files['Modified Date'] = meta['Modified Date']
             dic_of_files['Location'] = opord
 
-            # Extract text from opo 
+            # Extract text from opo
             flat_text = get_text(opord)
             print("-----------------------")
             print("Got text")
@@ -62,6 +63,7 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True):
 
             # Create flat dictionnary of opord
             flat_dic = make_dic(list_of_lists, annex_titles, list_of_titles)
+            dic_of_files['Conformity'] = conformity_stat(flat_dic)
             print("-----------------------")
             print("Made flat collection of texts")
 
@@ -83,6 +85,6 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True):
             print("ERROR::", e, ':', os.path.basename(opord))
 
     if save:
-        to_json(megadic, "Output/scan.json")
+        to_json(megadic, json_name)
 
     return megadic

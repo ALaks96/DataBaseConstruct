@@ -42,3 +42,12 @@ def make_dic(parsed_text, annexes, list_of_titles):
         print(e)
 
     return dict_of_dicts
+
+def conformity_stat(flat_dic):
+    list_empty = []
+    list_total = []
+    for title in list(flat_dic.keys()):
+        list_empty.append(len(list(i for i in list(flat_dic[title].values()) if i == '')))
+        list_total.append(len(list(flat_dic[title].values())))
+    part_empty = sum(list_empty)/sum(list_total)
+    return 1-part_empty
