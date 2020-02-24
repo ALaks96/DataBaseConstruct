@@ -33,7 +33,7 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True):
     arbo = get_arbo(path)
 
     for opord in arbo:
-        print("-----------------------")
+        print("#####################")
         print("Fetching : ", opord)
         # Initiate same key dic to be completed every time
         try:
@@ -83,6 +83,6 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True):
             print("ERROR::", e, ':', os.path.basename(opord))
 
     if save:
-        to_json(megadic, "scan.json")
+        to_json(megadic, "Output/scan.json")
 
     return megadic
