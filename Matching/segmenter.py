@@ -32,8 +32,7 @@ def get_annexes(text):
     return splitted, titles
 
 
-def recursive_items(dictionary):
-    l = []
+def recursive_items(dictionary, l=[]):
     for key, value in dictionary.items():
         l.append(key)
         if type(value) is dict:
