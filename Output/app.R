@@ -26,11 +26,11 @@ don <- read_csv(ur_path, col_types = list(col_double(),
   na.omit()
 
 cre <- don %>% 
-  select(title, created_date, authors) %>% 
+  select(title, created_date, authors, conformity) %>% 
   rename(date = created_date, 
          author = authors)
 mod <- don %>% 
-  select(title,modified_date, last_mod_by) %>% 
+  select(title,modified_date, last_mod_by, conformity) %>% 
   rename(date = modified_date, 
          author = last_mod_by)
 
@@ -85,6 +85,25 @@ ui <- fluidPage(theme = shinytheme('sandstone'),
                                                   value = 1200)),
                                     mainPanel(plotlyOutput("peoplemetadata", width = "150%", height = "20%"),
                                               DT::dataTableOutput(outputId = "peopletable"))
+                           ),
+                           tabPanel('Conformity tracker',
+                                    sidebarPanel(
+                                      selectInput('Files2',
+                                                  "Choose the files you're interested in!",
+                                                  choices = files,
+                                                  selected = c("OHQ ALL - FRAGO.docx","20190413_CONF_FHQ_007_FRAGO_TANGO HARVEST.pdf"),
+                                                  multiple = TRUE),
+                                      sliderInput('plotHeight3',
+                                                  'Adjust the height of the plot', 
+                                                  min = 100,
+                                                  max = 5000,
+                                                  value = 900),
+                                      sliderInput('plotWidth3',
+                                                  'Adjust the width of the plot',
+                                                  min = 100,
+                                                  max = 5000,
+                                                  value = 1200)),
+                                    mainPanel(plotlyOutput("conformity"))
                            )
                 )
 )
@@ -191,6 +210,32 @@ server <- function(input, output) {
   output$peopletable <- DT::renderDataTable({
     don %>%
       filter(last_mod_by %in% input$Author & authors %in% input$Author)
+  })
+  
+  ###################### CONFORMITY #########################
+  
+  conformity_data_viz <- reactive({
+    viz_don %>%
+      filter(title %in% input$Files2)
+  })
+  
+  output$conformity <- renderPlotly({
+    print(ggplotly(ggplot(data = conformity_data_viz(),
+                 aes(y = conformity_data_viz()$title,
+                            x = as.factor(conformity_data_viz()$date),
+                            size = as.factor(exp(conformity_data_viz()$conformity)),
+                            fill = as.factor(conformity_data_viz()$author),
+                            alpha = 0.6)) +
+      geom_point() +
+      geom_line() +
+      theme_bw() +
+      xlab("Filename") +
+      ggtitle("Conformity tracking") +
+      theme(axis.text.x = element_text(angle = 45)) +
+      theme(axis.text.y = element_blank()),
+      height = input$plotHeight3,
+      width = input$plotWidth3))
+
   })
   
 }
