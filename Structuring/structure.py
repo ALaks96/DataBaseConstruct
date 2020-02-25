@@ -45,10 +45,10 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True, viz=False, 
             print("-----------------------")
             print("Got metadata")
             dic_of_files['Title'] = meta['Title']
-            dic_of_files['Author(s)'] = meta['Author(s)']
-            dic_of_files['Last Modified By'] = meta['Last Modified By']
-            dic_of_files['Created Date'] = meta['Created Date']
-            dic_of_files['Modified Date'] = meta['Modified Date']
+            dic_of_files['Authors'] = meta['Author(s)']
+            dic_of_files['Last_Modified_By'] = meta['Last Modified By']
+            dic_of_files['Created_Date'] = meta['Created Date']
+            dic_of_files['Modified_Date'] = meta['Modified Date']
             dic_of_files['Location'] = opord
 
             # Extract text from opo
@@ -62,8 +62,19 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True, viz=False, 
             print("Got annexes")
 
             # Create flat dictionnary of opord
-            flat_dic = make_dic(list_of_lists, annex_titles, list_of_titles)
-            dic_of_files['Conformity'] = conformity_stat(flat_dic)
+            flat_dic1 = make_dic(list_of_lists, annex_titles, list_of_titles, fuzzy=False)
+            conform1 = conformity_stat(flat_dic1)
+
+            flat_dic2 = make_dic(list_of_lists, annex_titles, list_of_titles, fuzzy=True)
+            conform2 = conformity_stat(flat_dic2)
+
+            if conform1 > conform2:
+                flat_dic = flat_dic1
+                dic_of_files['Conformity'] = conform1
+            else:
+                flat_dic = flat_dic2
+                dic_of_files['Conformity'] = conform2
+
             print("-----------------------")
             print("Made flat collection of texts")
 
@@ -77,7 +88,7 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True, viz=False, 
             print("Restructured flat collection of texts")
 
             # And assign all of this to our megadic, indexed by incremental numbers!
-            megadic[str(index)] = dic_of_files
+            megadic[int(index)] = dic_of_files
             print("-----------------------")
             print("Saved to final indexed data base")
             index += 1

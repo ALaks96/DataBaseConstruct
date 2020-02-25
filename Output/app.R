@@ -16,10 +16,10 @@ don <- read_csv(ur_path, col_types = list(col_double(),
                                           col_character(), 
                                           col_double())) %>% 
   select(-X1) %>% 
-  rename(authors = `Author(s)`,
-         created_date = `Created Date`,
-         last_mod_by = `Last Modified By`,
-         modified_date = `Modified Date`,
+  rename(authors = `Authors`,
+         created_date = `Created_Date`,
+         last_mod_by = `Last_Modified_By`,
+         modified_date = `Modified_Date`,
          title = Title,
          location = Location,
          conformity = Conformity) %>% 
@@ -221,18 +221,17 @@ server <- function(input, output) {
   
   output$conformity <- renderPlotly({
     print(ggplotly(ggplot(data = conformity_data_viz(),
-                 aes(y = conformity_data_viz()$title,
-                            x = as.factor(conformity_data_viz()$date),
+                 aes(y = conformity_data_viz()$conformity,
+                            x = as.factor(conformity_data_viz()$title),
                             size = as.factor(exp(conformity_data_viz()$conformity)),
                             fill = as.factor(conformity_data_viz()$author),
                             alpha = 0.6)) +
-      geom_point() +
-      geom_line() +
+      geom_col() +
       theme_bw() +
-      xlab("Filename") +
+      xlab("File") +
+      ylab("Conformity to canevas") +
       ggtitle("Conformity tracking") +
-      theme(axis.text.x = element_text(angle = 45)) +
-      theme(axis.text.y = element_blank()),
+      theme(axis.text.x = element_text(angle = 45)),
       height = input$plotHeight3,
       width = input$plotWidth3))
 

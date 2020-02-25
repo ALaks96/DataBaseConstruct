@@ -23,6 +23,12 @@ class DateTimeEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, o)
 
 
+def jsonKeys2int(x):
+    if isinstance(x, dict):
+            return {int(k):v for k,v in x.items()}
+    return x
+
+
 def to_json(dic, file_name="metadata.json"):
     js = json.dumps(dic, indent=1, cls=DateTimeEncoder)
 
