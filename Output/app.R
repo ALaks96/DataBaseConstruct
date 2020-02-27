@@ -103,7 +103,8 @@ ui <- fluidPage(theme = shinytheme('sandstone'),
                                                   min = 100,
                                                   max = 5000,
                                                   value = 1200)),
-                                    mainPanel(plotlyOutput("conformity"))
+                                    mainPanel(plotlyOutput("conformity",  width = "150%", height = "20%"),
+                                              DT::dataTableOutput(outputId = "conformitytable"))
                            )
                 )
 )
@@ -215,16 +216,16 @@ server <- function(input, output) {
   ###################### CONFORMITY #########################
   
   conformity_data_viz <- reactive({
-    viz_don %>%
-      filter(title %in% input$Files2)
+    don %>%
+      filter(title %in% input$Files2) %>% 
+      arrange(desc(conformity))
   })
   
   output$conformity <- renderPlotly({
     print(ggplotly(ggplot(data = conformity_data_viz(),
                  aes(y = conformity_data_viz()$conformity,
                             x = as.factor(conformity_data_viz()$title),
-                            size = as.factor(exp(conformity_data_viz()$conformity)),
-                            fill = as.factor(conformity_data_viz()$author),
+                            fill = as.factor(conformity_data_viz()$authors),
                             alpha = 0.6)) +
       geom_col() +
       theme_bw() +
@@ -235,6 +236,12 @@ server <- function(input, output) {
       height = input$plotHeight3,
       width = input$plotWidth3))
 
+  })
+  
+  output$conformitytable <- DT::renderDataTable({
+    conformity_data_viz() %>% 
+      select(title, authors, conformity)
+                           
   })
   
 }

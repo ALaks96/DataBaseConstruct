@@ -3,16 +3,26 @@ import json
 import pandas as pd
 from datetime import datetime
 
-def get_arbo(location, ext=['ppt','pptx','docx','pdf','xlsx']):
-    # Initialize list of directories
-    paths = []
 
-    for file in os.listdir(location):
-        if file.endswith(tuple(ext)):
-            path = str(location) + "/" + str(file)
-            paths.append(path)
+def get_arbo(path, ext=['ppt','pptx','docx','pdf','xlsx']):
+    # create a list of file and sub directories
+    # names in the given directory
+    listOfFile = os.listdir(path)
+    allFiles = list()
+    # Iterate over all the entries
+    for entry in listOfFile:
+        # Create full path
+        fullPath = os.path.join(path, entry)
+        # If entry is a directory then get the list of files in this directory
+        if os.path.isdir(fullPath):
+            allFiles = allFiles + get_arbo(fullPath)
+        else:
+            if entry.endswith(tuple(ext)):
+                allFiles.append(fullPath)
+            else:
+                continue
 
-    return paths
+    return allFiles
 
 
 class DateTimeEncoder(json.JSONEncoder):
