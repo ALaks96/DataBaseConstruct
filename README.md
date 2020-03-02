@@ -2,15 +2,21 @@
 
 Repo to format unstructured infromation saved in a variety of file formats based on a pre-defined structure saved in a JSON under the name CANEVAS_STRUCT.json
 
-**You need the structure saved in json format at the root of the repo**
+**You need the structure saved in JSON format at the root of the repo**
 
 Save your data in the /Data folder with any type of structure you like, the repo will walk through all nested directories
 
-**To run:**
+**Create the Conda environment:**
+
+Pre-requisite: Miniconda3 or Anaconda
+Conda will use the yml file to install all dependencies
+```
+conda env create
+```
+
+**Run:**
 
 ```
-python3 -m pip install requirements.txt
-
 python3 main.py
 ```
 
