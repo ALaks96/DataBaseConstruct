@@ -10,6 +10,7 @@ from Extracting.text_extractor import get_text
 from Formatting.formatter import get_arbo
 from Formatting.formatter import to_json
 
+
 def restructure(struct, parsed):
     for key, value in struct.items():
         if type(value) is dict:
@@ -29,9 +30,12 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True, viz=False, 
     # Initiate mega dic containing everything
     megadic = {}
     index = 1
+    counter1 = 0
+
 
     # Get all OPORD in dir in any format (msoffice or pdf)
     arbo = get_arbo(path)
+    file_nb = len(arbo)
 
     for opord in arbo:
         print("#####################")
@@ -72,6 +76,7 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True, viz=False, 
                 flat_dic = flat_dic1
                 dic_of_files['Conformity'] = conform1
             else:
+                counter1 += 1
                 flat_dic = flat_dic2
                 dic_of_files['Conformity'] = conform2
 
@@ -94,6 +99,8 @@ def annex_walker(path, struct_path="CANEVAS_STRUCT.json", save=True, viz=False, 
             index += 1
         except Exception as e:
             print("ERROR::", e, ':', os.path.basename(opord))
+
+    print(counter1/file_nb)
 
     if save:
         to_json(megadic, json_name)
